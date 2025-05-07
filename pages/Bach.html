@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prepa UNAM / Bachillerato General</title>
+    <link rel="stylesheet" href="./Bach-styles.css">
+    <!-- Opcional: Puedes añadir una fuente de Google Fonts si deseas -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <header class="site-header">
+        <!-- Puedes añadir un logo o título aquí si quieres que esté fuera de la nav -->
+    </header>
+
+    <nav class="navbar">
+        <div class="container">
+            <ul class="nav-links">
+                <li><a href="#inicio">Inicio</a></li>
+                <li><a href="#acerca">Acerca de</a></li>
+                <li><a href="#admision">Admisión</a></li>
+                <li><a href="#contacto">Contacto</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="main-content-wrapper">
+        <div class="container">
+
+            <!-- Selector de Secciones -->
+            <div class="section-selector">
+                <button id="btn-prepa" class="selector-button active">Prepa UNAM</button>
+                <button id="btn-bachillerato" class="selector-button">Bachillerato General</button>
+            </div>
+
+            <!-- Contenedor que permite el deslizamiento -->
+            <div class="content-slider-container">
+                <div class="content-slider">
+                    <!-- Sección Prepa UNAM -->
+                    <section id="prepa-section" class="content-section">
+                        <h2>Prepa UNAM </h2>
+                        <p>Modalidades, planes de estudio, proceso de selección vía concurso de ingreso, pase reglamentado a la licenciatura, instalaciones, actividades extracurriculares, etc.</p>
+                        <!-- Agrega aquí más contenido relevante para la Prepa UNAM -->
+                        <div class="content-placeholder">
+                            <h3>Plan de Estudios</h3>
+                            <p>Detalles sobre las materias, áreas de profundización y enfoque educativo de la Prepa UNAM.</p>
+                            <h3>Admisión</h3>
+                            <p>Requisitos, fechas importantes y guía para el concurso de selección.</p>
+                            <h3>Pase Reglamentado</h3>
+                            <p>Cómo funciona el pase automático a las licenciaturas de la UNAM.</p>
+                        </div>
+                    </section>
+
+                    <!-- Sección Bachillerato General -->
+                    <section id="bachillerato-section" class="content-section">
+                        <h2>Bachillerato General</h2>
+                        <p>Información sobre el bachillerato general (fuera del sistema UNAM).</p>
+                        <p>Características comunes de los bachilleratos generales, objetivos, preparación para el ingreso a cualquier universidad (incluida la UNAM vía examen de admisión), modalidades, etc.</p>
+                        <!-- Agrega aquí más contenido relevante para el Bachillerato General -->
+                        <div class="content-placeholder">
+                            <h3>Plan de Estudios Típico</h3>
+                            <p>Materias fundamentales, áreas de enfoque y cómo preparan para la educación superior.</p>
+                            <h3>Acceso a Universidades</h3>
+                            <p>Preparación para exámenes de admisión (UNAM, IPN, UAM y otras universidades).</p>
+                            <h3>Opciones Educativas</h3>
+                            <p>Bachilleratos federales, estatales, privados, tecnológicos (con componente general).</p>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="site-footer">
+        <div class="container">
+            <p>© 2023 Tu Sitio Web. Todos los derechos reservados.</p>
+            <!-- Puedes añadir enlaces a redes sociales, aviso de privacidad, etc. -->
+        </div>
+    </footer>
+
+    <script src="./Bach-script.js"></script>
+</body>
+</html>
