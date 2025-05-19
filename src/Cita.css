@@ -1,0 +1,405 @@
+
+:root {
+    --font-primary: 'Poppins', 'Open Sans', sans-serif;
+    --font-secondary: 'Open Sans', 'Poppins', sans-serif;
+    --unirem-blue: #0b254b;
+    --unirem-blue-rgb: 11, 37, 75;
+    --unirem-yellow: #FFC107;
+    --unirem-yellow-rgb: 255, 193, 7;
+    --unirem-light-blue: #eef4ff;
+    --unirem-dark-blue: #081a38;
+    --unirem-accent-red: #e02a3e;
+    --text-primary: #333;
+    --text-secondary: #555;
+    --text-light: #fff;
+    --border-color-soft: #e0e0e0;
+    --border-color-medium: #ccc;
+    --border-color-light: #f0f0f0;
+    --shadow-light: 0 5px 15px rgba(0, 0, 0, 0.08);
+    --shadow-medium: 0 10px 25px rgba(0, 0, 0, 0.12);
+    --border-radius-soft: 10px;
+    --border-radius-medium: 16px;
+    --border-radius-button-nav: 28px;
+    --border-radius-button-slot: 22px;
+    --border-radius-button-confirm: 30px;
+    --color-valid: #28a745;
+    --color-invalid: var(--unirem-accent-red);
+}
+
+body {
+    font-family: var(--font-secondary);
+    line-height: 1.7;
+    color: var(--text-primary);
+    margin: 0;
+    background-color: #f7f9fc;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.booking-page-container {
+    max-width: 1000px;
+    margin: 30px auto;
+    background-color: #fff;
+    padding: 30px;
+    border-radius: var(--border-radius-medium);
+    box-shadow: var(--shadow-medium);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.booking-header {
+    text-align: center;
+    margin-bottom: 30px;
+    padding-bottom: 25px;
+    border-bottom: 1px solid var(--border-color-soft);
+}
+.unirem-logo-large {
+    max-width: 180px;
+    height: auto;
+    display: block;
+    margin: 0 auto 15px auto;
+}
+h1.form-title {
+    font-family: var(--font-primary);
+    color: var(--unirem-blue);
+    font-size: 2.6em;
+    font-weight: 700;
+    margin: 0;
+    line-height: 1.2;
+}
+.header-description {
+    font-family: var(--font-secondary);
+    font-size: 1.1em;
+    font-weight: 400;
+    color: var(--text-secondary);
+    margin-top: 10px;
+    line-height: 1.6;
+}
+
+.booking-page-container h3,
+.booking-page-container h4 {
+    font-family: var(--font-primary);
+    color: var(--unirem-blue);
+    font-weight: 600;
+    margin-top: 0;
+    margin-bottom: 25px;
+    text-align: center;
+    line-height: 1.3;
+}
+.calendar-title, .form-section-title {
+    font-size: 1.5em;
+}
+
+.booking-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 35px;
+}
+
+.booking-calendar-pane,
+.booking-slots-form-pane {
+    padding: 30px;
+    border-radius: var(--border-radius-medium);
+    background-color: #fff;
+    box-shadow: var(--shadow-light);
+    border: 1px solid var(--border-color-light);
+    flex: 1;
+    min-width: 300px;
+}
+.booking-calendar-pane {
+    flex-basis: 420px;
+    flex-shrink: 0;
+}
+.booking-slots-form-pane {
+    flex-basis: 0;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+/* CALENDAR STYLES */
+.calendar-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    color: var(--unirem-blue);
+    font-size: 1.2em;
+}
+.month-year-display {
+    font-family: var(--font-primary);
+    font-weight: 600;
+    min-width: 160px;
+    text-align: center;
+    color: var(--unirem-blue);
+    text-transform: capitalize;
+}
+.calendar-nav .button-icon {
+     background: none; border: none; cursor: pointer; padding: 7px;
+     font-size: 1.5em; color: var(--unirem-blue);
+     transition: color 0.3s ease, background-color 0.2s ease, transform 0.2s ease;
+     border-radius: var(--border-radius-button-nav);
+     width: 40px; height: 40px; display: flex; justify-content: center; align-items: center;
+     flex-shrink: 0; outline: none;
+}
+.calendar-nav .button-icon:hover:not(:disabled) {
+    color: var(--unirem-yellow); background-color: rgba(var(--unirem-blue-rgb), 0.07);
+}
+.calendar-nav .button-icon:active:not(:disabled) { transform: scale(0.94); }
+.calendar-nav .button-icon:focus-visible {
+     box-shadow: 0 0 0 2px var(--unirem-blue), 0 0 0 4px var(--unirem-yellow); outline: none;
+}
+.calendar-nav .button-icon:disabled { color: #b0b0b0; cursor: not-allowed; opacity: 0.6; }
+
+.calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; text-align: center; }
+.day-name {
+    font-family: var(--font-secondary); font-weight: 700; font-size: 0.85em;
+    color: var(--text-secondary); padding-bottom: 7px;
+    border-bottom: 1px solid var(--border-color-medium); margin-bottom: 3px;
+}
+.day {
+    font-family: var(--font-secondary); font-weight: 400; width: 100%; padding: 8px 0;
+    aspect-ratio: 1 / 1; display: flex; justify-content: center; align-items: center;
+    border-radius: var(--border-radius-soft); cursor: pointer;
+    transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease, transform 0.1s ease;
+    user-select: none; color: var(--text-primary);
+    border: 1px solid var(--border-color-light); background-color: #fff; font-size: 0.9em;
+}
+.day.current-month { color: var(--text-primary); }
+.day.outside-month {
+    color: #c0c0c0; cursor: default; background-color: transparent;
+    border-color: transparent; box-shadow: none; opacity: 0.7; font-size: 0.8em;
+}
+.day.past-day {
+    color: #b0b0b0; cursor: default; background-color: #f5f5f5;
+    border-color: var(--border-color-soft); opacity: 0.7; box-shadow: none;
+}
+.day.available:not(.past-day):hover {
+    background-color: var(--unirem-light-blue); border-color: var(--unirem-blue);
+    color: var(--unirem-blue); box-shadow: var(--shadow-light); transform: translateY(-1px);
+}
+.day.available:not(.past-day):active { transform: translateY(0); }
+.day.selected {
+    background-color: var(--unirem-yellow); color: var(--unirem-blue); font-weight: 700;
+    border-color: var(--unirem-yellow); box-shadow: 0 3px 8px rgba(var(--unirem-yellow-rgb), 0.4);
+    transform: none;
+}
+
+.meeting-details-small {
+     margin-top: 30px; padding-top: 20px; border-top: 1px solid var(--border-color-soft);
+     text-align: center; font-family: var(--font-secondary);
+}
+.meeting-details-small p {
+    margin: 8px 0; font-size: 0.95em; font-weight: 400; color: var(--text-secondary);
+    display: flex; align-items: center; justify-content: center;
+}
+.meeting-details-small i { margin-right: 8px; color: var(--unirem-blue); font-size: 1.1em; }
+.timezone-selector {
+    margin-top: 15px; text-align: center; font-size: 0.85em;
+    font-family: var(--font-secondary); font-weight: 400; color: var(--text-secondary);
+}
+.timezone-selector i { margin-right: 5px; color: var(--unirem-blue); }
+
+/* TIME SLOTS & FORM STYLES */
+.selected-date-display {
+     font-family: var(--font-primary); font-weight: 600; min-height: 1.7em;
+     color: var(--unirem-blue); margin-bottom: 25px; font-size: 1.2em; text-align: center;
+}
+.time-slots {
+    display: flex; flex-wrap: wrap; gap: 8px; max-height: 280px; overflow-y: auto;
+    padding-right: 10px; margin-bottom: 30px;
+    scrollbar-width: thin; scrollbar-color: var(--unirem-blue) #f0f0f0;
+}
+.time-slots::-webkit-scrollbar { width: 6px; }
+.time-slots::-webkit-scrollbar-track { background: #f0f0f0; border-radius: 3px; }
+.time-slots::-webkit-scrollbar-thumb { background-color: var(--unirem-blue); border-radius: 3px; }
+
+.spinner-center { display: flex; justify-content: center; align-items: center; padding: 20px; color: var(--unirem-blue); }
+
+.no-date-selected {
+    font-family: var(--font-secondary); font-weight: 400; text-align: center;
+    color: var(--text-secondary); font-style: italic; width: 100%; padding: 25px;
+    background-color: #f8f9fa; border-radius: var(--border-radius-soft); margin-top: 0;
+}
+.time-slots.has-message {
+    min-height: 60px; display: flex; align-items: center; justify-content: center;
+}
+
+.time-slot {
+    font-family: var(--font-secondary); font-weight: 700; width: auto; flex-basis: 95px;
+    flex-grow: 1; flex-shrink: 1; padding: 10px 8px;
+    display: flex; justify-content: center; align-items: center;
+    background-color: #fff; color: var(--unirem-blue); border: 1px solid var(--unirem-blue);
+    border-radius: var(--border-radius-button-slot); cursor: pointer; font-size: 0.95em;
+    transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease, transform 0.1s ease;
+    text-align: center; outline: none;
+}
+.time-slot:hover:not(:disabled) {
+    background-color: var(--unirem-blue); color: var(--text-light); border-color: var(--unirem-blue);
+    box-shadow: var(--shadow-light); transform: translateY(-1px);
+}
+.time-slot:active:not(:disabled) { transform: translateY(0); }
+.time-slot:focus-visible {
+    box-shadow: 0 0 0 2px var(--unirem-blue), 0 0 0 4px var(--unirem-yellow); outline: none;
+}
+.time-slot.selected {
+    background-color: var(--unirem-yellow); color: var(--unirem-blue); border-color: var(--unirem-yellow);
+    font-weight: 700; box-shadow: 0 3px 8px rgba(var(--unirem-yellow-rgb), 0.4); transform: none;
+}
+.time-slot.disabled {
+    background-color: #e9ecef; color: #adb5bd; border-color: #dee2e6;
+    cursor: not-allowed; opacity: 0.7; box-shadow: none; transform: none;
+}
+.time-slot.disabled:hover { /* Ensure hover doesn't change disabled appearance */
+    background-color: #e9ecef; color: #adb5bd; border-color: #dee2e6;
+    box-shadow: none; transform: none;
+}
+
+.user-info-form {
+    padding: 30px; border: 1px solid var(--border-color-soft);
+    border-radius: var(--border-radius-medium); box-shadow: var(--shadow-light);
+    background-color: #fdfdfd; margin-top: 30px; font-family: var(--font-secondary);
+}
+.required-star { color: var(--unirem-accent-red); margin-left: 3px; font-weight: 700; }
+.form-group { margin-bottom: 20px; }
+.form-label {
+    font-family: var(--font-secondary); display: block; margin-bottom: 8px;
+    font-weight: 700; color: var(--text-primary); font-size: 1em;
+}
+.form-input, .form-textarea {
+    font-family: var(--font-secondary); width: 100%; padding: 12px;
+    border: 1px solid var(--border-color-medium); border-radius: var(--border-radius-soft);
+    box-sizing: border-box; font-size: 0.95em; font-weight: 400;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    background-color: #fff; outline: none;
+}
+.form-input::placeholder, .form-textarea::placeholder { color: #a0a0a0; opacity: 1; font-weight: 400; }
+.form-input:focus, .form-textarea:focus {
+    border-color: var(--unirem-blue); box-shadow: 0 0 0 3px rgba(var(--unirem-blue-rgb), 0.15);
+}
+.form-textarea { resize: vertical; min-height: 120px; }
+
+.form-input:required:valid:not(:placeholder-shown),
+.form-textarea:required:valid:not(:placeholder-shown) {
+    border-color: var(--color-valid); padding-right: calc(12px + 1.5em);
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3e%3cpath fill='%2328a745' d='M2.3 6.73L.6 4.53c-.4-1.04 1.1-1.4 1.8-.53l1.7 2.13c.2.2.5.2.7 0l3.2-4.27c.4-.53-.2-1.4-1.0-.8L3.6 5.93c-.3.4-.9.4-1.3.0z'/%3e%3c/svg%3e");
+    background-repeat: no-repeat; background-position: right calc(0.375em + 0.19rem) center;
+    background-size: calc(0.65em + 0.4rem) calc(0.65em + 0.4rem);
+}
+.form-input:required:invalid:not(:placeholder-shown),
+.form-textarea:required:invalid:not(:placeholder-shown) {
+    border-color: var(--color-invalid); padding-right: calc(12px + 1.5em);
+     background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' width='12' height='12' fill='none' stroke='%23dc3545'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath stroke-linejoin='round' d='M5.8 3.6h.4L6 6.5z'/%3e%3ccircle cx='6' cy='8.2' r='.6' fill='%23dc3545' stroke='none'/%3e%3c/svg%3e");
+    background-repeat: no-repeat; background-position: right calc(0.375em + 0.19rem) center;
+    background-size: calc(0.65em + 0.4rem) calc(0.65em + 0.4rem);
+}
+.form-input:focus:required:valid, .form-textarea:focus:required:valid,
+.form-input:focus:required:invalid, .form-textarea:focus:required:invalid {
+    background-image: none; padding-right: 12px;
+}
+.form-status {
+    font-family: var(--font-secondary); font-weight: 700; padding: 15px;
+    border-radius: var(--border-radius-soft); margin-top: 25px; text-align: center;
+    font-size: 1em; display: none; opacity: 0;
+    transition: opacity 0.3s ease, transform 0.2s ease; transform: translateY(10px);
+}
+.form-status.visible { display: block; opacity: 1; transform: translateY(0); }
+.form-status.success { background-color: #d1e7dd; color: #0f5132; border: 1px solid #badbcc; }
+.form-status.error { background-color: #f8d7da; color: #842029; border: 1px solid #f5c2c7; }
+
+#btn-confirmar {
+    font-family: var(--font-primary); display: flex; justify-content: center; align-items: center;
+    width: 100%; margin-top: 30px; padding: 12px 20px; font-size: 1.1em; font-weight: 700;
+    border-radius: var(--border-radius-button-confirm); background-color: var(--unirem-blue);
+    color: var(--text-light); border: none; cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.15s ease, opacity 0.2s ease, box-shadow 0.2s ease;
+    line-height: 1.4; text-transform: uppercase; letter-spacing: 0.04em; outline: none;
+}
+#btn-confirmar:hover:not(:disabled) {
+    background-color: var(--unirem-dark-blue); transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(var(--unirem-blue-rgb), 0.18);
+}
+#btn-confirmar:active:not(:disabled) {
+    transform: translateY(0); box-shadow: 0 2px 6px rgba(var(--unirem-blue-rgb), 0.15);
+}
+#btn-confirmar:focus-visible {
+     box-shadow: 0 0 0 2px var(--unirem-blue), 0 0 0 4px var(--unirem-yellow); outline: none;
+}
+#btn-confirmar:disabled {
+    background-color: #c0c0c0; color: #707070; cursor: not-allowed;
+    opacity: 0.7; box-shadow: none; transform: none;
+}
+#btn-confirmar svg, #btn-confirmar .fa-spin {
+    vertical-align: middle; margin-right: 8px; width: 16px; height: 16px;
+}
+#btn-confirmar .fa-spin { animation: fa-spin 1s linear infinite; }
+@keyframes fa-spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+/* RESPONSIVE STYLES */
+@media (max-width: 1100px) {
+    .booking-page-container { max-width: 920px; padding: 25px; }
+    .booking-calendar-pane { flex-basis: 390px; }
+    h1.form-title { font-size: 2.4em; }
+}
+@media (max-width: 992px) {
+    .booking-wrapper { flex-direction: column; gap: 30px; }
+    .booking-calendar-pane, .booking-slots-form-pane { padding: 25px; }
+    .booking-page-container { margin: 20px auto; }
+    .unirem-logo-large { max-width: 160px; }
+    h1.form-title { font-size: 2.2em; }
+    .header-description { font-size: 1em; }
+    .calendar-title, .form-section-title { font-size: 1.4em; }
+    .day-name { font-size: 0.8em; }
+    .day { padding: 9px 0; font-size: 0.85em; }
+    .time-slot { padding: 10px 8px; font-size: 0.9em; flex-basis: 85px; }
+    #btn-confirmar { padding: 11px 18px; font-size: 1.05em; }
+}
+@media (max-width: 768px) {
+     .booking-page-container { padding: 20px; }
+     .booking-calendar-pane, .booking-slots-form-pane { padding: 20px; }
+     .unirem-logo-large { max-width: 140px; }
+     h1.form-title { font-size: 2em; }
+     .calendar-nav .button-icon { width: 38px; height: 38px; font-size: 1.3em; padding: 6px; border-radius: var(--border-radius-button-nav); }
+     .day-name { font-size: 0.75em; }
+     .day { padding: 7px 0; font-size: 0.8em; border-radius: 8px; }
+     .day.outside-month { font-size: 0.7em; }
+     .time-slots { gap: 7px; max-height: 220px; }
+     .time-slot { padding: 9px 7px; font-size: 0.9em; flex-basis: 80px; border-radius: var(--border-radius-button-slot); }
+     .form-input, .form-textarea { padding: 11px; font-size: 0.9em; }
+     #btn-confirmar { padding: 10px 16px; font-size: 1em; border-radius: var(--border-radius-button-confirm); }
+     #btn-confirmar svg { width: 15px; height: 15px; margin-right: 7px; }
+}
+@media (max-width: 576px) {
+    .booking-page-container { padding: 15px; margin: 15px auto; }
+    .booking-wrapper { gap: 25px; }
+    .booking-calendar-pane, .booking-slots-form-pane { padding: 15px; }
+    .unirem-logo-large { max-width: 120px; }
+    h1.form-title { font-size: 1.8em; }
+    .header-description { font-size: 0.9em; }
+    .calendar-title, .form-section-title { font-size: 1.3em; margin-bottom: 20px; }
+    .calendar-nav .button-icon { width: 34px; height: 34px; font-size: 1.2em; padding: 5px; border-radius: 20px; }
+    .month-year-display { font-size: 0.9em; min-width: 100px; }
+    .calendar-grid { gap: 4px; }
+    .day-name { font-size: 0.7em; padding-bottom: 5px; margin-bottom: 2px; }
+    .day { padding: 6px 0; font-size: 0.75em; border-radius: 6px; }
+    .day.outside-month { font-size: 0.65em; }
+    .selected-date-display { font-size: 1em; margin-bottom: 20px; }
+    .time-slots { gap: 6px; max-height: 180px; margin-bottom: 25px; padding-right: 6px; }
+    .time-slot { padding: 8px 6px; font-size: 0.8em; flex-basis: 70px; border-radius: 18px; }
+    .user-info-form { padding: 15px; margin-top: 20px; }
+    .form-group { margin-bottom: 15px; }
+    .form-label { font-size: 0.9em; margin-bottom: 6px; }
+    .form-input, .form-textarea { padding: 10px; font-size: 0.9em; }
+    #btn-confirmar { padding: 10px 15px; font-size: 0.95em; border-radius: 25px; margin-top: 25px; }
+    #btn-confirmar svg { width: 14px; height: 14px; margin-right: 6px; }
+    .form-input:required:valid:not(:placeholder-shown),
+    .form-textarea:required:valid:not(:placeholder-shown),
+    .form-input:required:invalid:not(:placeholder-shown),
+    .form-textarea:required:invalid:not(:placeholder-shown) {
+        padding-right: calc(10px + 1.2em);
+        background-size: calc(0.6em + 0.3rem) calc(0.6em + 0.3rem);
+    }
+    .form-input:focus:required:valid, .form-textarea:focus:required:valid,
+    .form-input:focus:required:invalid, .form-textarea:focus:required:invalid { padding-right: 10px; }
+}

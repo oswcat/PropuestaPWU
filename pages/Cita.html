@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Agenda una consulta educativa con un asesor de UNIREM.">
+    <title>Agenda tu Cita - UNIREM</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <link rel="icon" href="./src/cropped-f1.webp" type="image/png"> <!-- Verifica esta ruta -->
+
+    <!-- CSS Específico para la página de Cita -->
+    <link rel="stylesheet" href="../src/Cita.css"> <!-- Verifica esta ruta -->
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <!-- GA Tag (Opcional) - Reemplaza G-K2BBVRYBMM con tu ID de GA4 si es diferente -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-K2BBVRYBMM"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-K2BBVRYBMM');
+    </script>
+</head>
+<body>
+
+    <section class="content-area">
+        <div class="container booking-page-container">
+
+            <div class="booking-header">
+                 <img src="./src/3 Logo-UNIREM-Color.png" alt="Logo UNIREM" class="unirem-logo-large"> <!-- Verifica esta ruta -->
+                 <h1 class="form-title">¡Agenda tu Consulta Educativa!</h1>
+                 <p class="header-description">Selecciona la fecha y hora que mejor se adapte a tu disponibilidad y completa tus datos para confirmar.</p>
+            </div>
+
+            <div class="booking-wrapper">
+
+                <div class="booking-calendar-pane">
+                    <h3 class="calendar-title">Selecciona una Fecha</h3>
+                    <div class="calendar-nav">
+                        <button id="prev-month" class="button-icon" aria-label="Mes anterior"><i class="fas fa-chevron-left"></i></button>
+                        <span id="current-month-year" class="month-year-display" aria-live="polite"></span>
+                        <button id="next-month" class="button-icon" aria-label="Mes siguiente"><i class="fas fa-chevron-right"></i></button>
+                    </div>
+                    <div class="calendar-grid">
+                        <div class="day-name">Dom</div>
+                        <div class="day-name">Lun</div>
+                        <div class="day-name">Mar</div>
+                        <div class="day-name">Mié</div>
+                        <div class="day-name">Jue</div>
+                        <div class="day-name">Vie</div>
+                        <div class="day-name">Sáb</div>
+                        <!-- Los días se llenarán con JavaScript -->
+                    </div>
+                     <div class="meeting-details-small">
+                         <p><i class="fas fa-clock"></i> Duración: 30 min</p>
+                         <p><i class="fas fa-video"></i> Modalidad: Videollamada o Teléfono</p>
+                     </div>
+                    <div class="timezone-selector">
+                        <i class="fas fa-globe"></i>
+                        <span>Tu hora local (automático)</span>
+                    </div>
+                </div>
+
+                <div class="booking-slots-form-pane">
+                    <div class="selected-date-display" aria-live="polite"></div>
+                    <div class="time-slots">
+                        <div class="no-date-selected">Selecciona una fecha a la izquierda para ver los horarios disponibles.</div>
+                    </div>
+
+                    <div class="user-info-form" style="display: none;">
+                        <h4 class="form-section-title">Completa tus Datos</h4>
+                        <div class="form-group">
+                            <label for="input-nombre" class="form-label">Nombre Completo <span class="required-star">*</span>:</label>
+                            <input type="text" id="input-nombre" name="nombre" class="form-input" required placeholder="Tu nombre completo">
+                        </div>
+                        <div class="form-group">
+                            <label for="input-email" class="form-label">Correo Electrónico <span class="required-star">*</span>:</label>
+                            <input type="email" id="input-email" name="email" class="form-input" required placeholder="tu.correo@ejemplo.com">
+                        </div>
+                         <div class="form-group">
+                            <label for="input-phone" class="form-label">Teléfono / WhatsApp <span class="required-star">*</span>:</label>
+                            <input type="tel" id="input-phone" name="telefono" class="form-input" required placeholder="Ej: 55 1234 5678">
+                        </div>
+                        <input type="hidden" name="form_source" value="cita_calendario">
+                        <!-- Campos opcionales (si los necesitas) -->
+                        <!-- 
+                        <div class="form-group">
+                            <label for="input-carrera" class="form-label">Carrera de Interés (Opcional):</label>
+                            <input type="text" id="input-carrera" name="carrera_interes" class="form-input" placeholder="Ej: Ingeniería Industrial">
+                        </div>
+                        <div class="form-group">
+                            <label for="input-mensaje" class="form-label">Mensaje Adicional (Opcional):</label>
+                            <textarea id="input-mensaje" name="mensaje" class="form-textarea" placeholder="Escribe aquí tus dudas específicas..."></textarea>
+                        </div>
+                        -->
+                        <div id="booking-form-status" class="form-status" aria-live="polite"></div>
+                    </div>
+
+                    <button id="btn-confirmar" class="button button-primary" disabled> <!-- Removí button-pill por si acaso, ya que el CSS lo maneja -->
+                         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-calendar" viewBox="0 0 16 16" style="vertical-align: middle; margin-right: 8px;"> <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5zM1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4H1z"/></svg>
+                         Selecciona Fecha y Hora
+                    </button>
+                </div>
+
+            </div> <!-- Fin .booking-wrapper -->
+
+        </div> <!-- Fin .container.booking-page-container -->
+    </section> <!-- Fin .content-area -->
+
+    <script src="../js/Cita-script.js"></script> <!-- Verifica esta ruta -->
+</body>
+</html>

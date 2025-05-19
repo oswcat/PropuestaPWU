@@ -84,6 +84,38 @@ p { margin-bottom: 1rem; color: var(--medium-text); }
 .text-center { text-align: center; }
 
 /* ============================================= */
+/* ==          REVEAL ON SCROLL ANIMATION     == */
+/* ============================================= */
+/* Add this class to elements you want to animate on scroll */
+.animate-on-scroll {
+    opacity: 0;
+    /* Default initial transform - can be overridden */
+    transform: translateY(20px);
+    transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+}
+
+/* Specific initial transforms for different animations */
+.split-content.animate-on-scroll { transform: translateX(-50px); }
+.split-image.animate-on-scroll { transform: translateX(50px); }
+/* Mobile split */
+@media (max-width: 991px) {
+    .split-content.animate-on-scroll, .split-image.animate-on-scroll { transform: translateY(50px); }
+}
+/* Clip cards - just fade, no initial transform */
+.clip-card.animate-on-scroll {
+     transform: none; /* Reset initial transform */
+     transition: opacity 0.5s ease-out; /* Shorter fade for clips */
+}
+
+
+/* State when the element becomes visible */
+.animate-on-scroll.visible-element {
+    opacity: 1;
+    transform: none; /* Remove initial transform */
+}
+
+
+/* ============================================= */
 /* ==       ESTILOS DE BOTONES (REVISADOS)    == */
 /* ============================================= */
 .btn { display: inline-block; font-family: var(--font-primary); font-weight: 600; padding: 0.6em 1.6em; border: none; border-radius: 50px; cursor: pointer; transition: all 0.3s ease; text-transform: uppercase; letter-spacing: 0.5px; font-size: 0.85rem; line-height: 1.5; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; vertical-align: middle; }
@@ -104,8 +136,8 @@ p { margin-bottom: 1rem; color: var(--medium-text); }
 /* ============================================= */
 /* ==   BARRA DE NAVEGACIÓN SUPERIOR (AZUL)   == */
 /* ============================================= */
-.navbar { background: var(--navbar-bg); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); height: var(--navbar-height); box-shadow: 0 2px 15px var(--shadow-color-medium); position: sticky; top: 0; z-index: 1000; width: 100%; transition: top 0.4s ease-in-out, background 0.3s ease, transform 0.4s ease-in-out; /* Añadido transform */ transform: translateY(0); /* Estado inicial */ }
-.navbar--hidden { /* top: calc(-1 * var(--navbar-height) - 10px); */ transform: translateY(-110%); /* Ocultar con transform */ }
+.navbar { background: var(--navbar-bg); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); height: var(--navbar-height); box-shadow: 0 2px 15px var(--shadow-color-medium); position: sticky; top: 0; z-index: 1000; width: 100%; transition: transform 0.4s ease-in-out, background 0.3s ease; /* Removed top transition */ transform: translateY(0); /* Estado inicial visible */ }
+.navbar--hidden { transform: translateY(-110%); /* Ocultar con transform */ }
 .navbar-content { display: flex; justify-content: space-between; align-items: center; height: 100%; }
 .logo img { border-radius: 0; height: var(--navbar-logo-height, 45px); /* Variable para ajustar fácil */ width: auto; }
 .nav-links { list-style: none; display: flex; align-items: center; margin: 0; padding: 0; }
@@ -118,7 +150,8 @@ p { margin-bottom: 1rem; color: var(--medium-text); }
 /* --- Estilos Dropdown --- */
 .has-dropdown > a { cursor: pointer; }
 .dropdown-indicator { font-size: 0.6em; margin-left: 8px; transition: transform 0.3s ease; }
-.has-dropdown.open > a .dropdown-indicator, .has-dropdown:hover > a .dropdown-indicator { transform: rotate(180deg); }
+.has-dropdown.open > a .dropdown-indicator, /* Added for JS toggle */
+.has-dropdown:hover > a .dropdown-indicator { transform: rotate(180deg); }
 /* Corrección visibilidad dropdown en desktop */
 .dropdown-menu { list-style: none; position: absolute; top: 95%; left: 0; min-width: 200px; background-color: var(--dropdown-bg); border-radius: var(--border-radius-small); box-shadow: 0 5px 15px var(--shadow-color-medium); z-index: 1001; padding: 10px 0; opacity: 0; visibility: hidden; transform: translateY(10px); transition: opacity 0.3s ease, visibility 0s linear 0.3s, transform 0.3s ease; /* Ajuste transición visibility */ border: 1px solid var(--border-color); }
 .has-dropdown:hover .dropdown-menu, .has-dropdown:focus-within .dropdown-menu /* Añadido focus-within para accesibilidad */ { opacity: 1; visibility: visible; transform: translateY(0); transition: opacity 0.3s ease, visibility 0s linear 0s, transform 0.3s ease; }
@@ -136,8 +169,8 @@ p { margin-bottom: 1rem; color: var(--medium-text); }
 /* ============================================= */
 /* ==         NAVEGACIÓN VERTICAL TIMELINE    == */
 /* ============================================= */
-.timeline-nav { position: fixed; top: 50%; right: var(--timeline-nav-right); transform: translateY(-50%); width: var(--timeline-nav-width); z-index: 999; opacity: 0; visibility: hidden; transition: opacity 0.5s ease 0.2s, visibility 0s linear 0.7s; pointer-events: none; }
-.timeline-nav.visible { opacity: 1; visibility: visible; transition: opacity 0.5s ease 0.2s, visibility 0s linear 0s; pointer-events: auto; }
+.timeline-nav { position: fixed; top: 50%; right: var(--timeline-nav-right); transform: translateY(-50%); width: var(--timeline-nav-width); z-index: 999; opacity: 0; visibility: hidden; transition: opacity 0.5s ease 0.2s, visibility 0s linear 0.7s; pointer-events: none; /* Prevent interaction when hidden */ }
+.timeline-nav.visible { opacity: 1; visibility: visible; transition: opacity 0.5s ease 0.2s, visibility 0s linear 0s; pointer-events: auto; /* Allow interaction when visible */ }
 .timeline-nav ul { list-style: none; padding: 0; margin: 0; position: relative; display: flex; flex-direction: column; align-items: flex-end; }
 .timeline-nav li { position: relative; padding-right: var(--timeline-text-right-offset); margin-bottom: var(--timeline-item-spacing); width: 100%; text-align: right; }
 .timeline-nav li:last-child { margin-bottom: 0; }
@@ -170,21 +203,25 @@ p { margin-bottom: 1rem; color: var(--medium-text); }
 /* ==        SECCIÓN QUIÉNES SOMOS (SPLIT)    == */
 /* ============================================= */
 .split-section { display: flex; align-items: center; gap: 60px; }
-.split-content { flex: 1; animation: slideInFromLeft 0.8s ease-out forwards; opacity: 0; }
-.split-image { flex: 1; max-width: 50%; animation: slideInFromRight 0.8s ease-out forwards; opacity: 0; animation-delay: 0.2s; }
+/* Remove animation properties from here, use .animate-on-scroll */
+/* .split-content { flex: 1; animation: slideInFromLeft 0.8s ease-out forwards; opacity: 0; } */
+/* .split-image { flex: 1; max-width: 50%; animation: slideInFromRight 0.8s ease-out forwards; opacity: 0; animation-delay: 0.2s; } */
+.split-content { flex: 1; } /* Retain flex properties */
+.split-image { flex: 1; max-width: 50%;} /* Retain flex properties */
+
 .split-image img { box-shadow: 0 15px 35px rgba(0,0,0,0.12); border-radius: var(--border-radius); /* Asegurar bordes redondeados */}
 .split-content .btn { margin-top: 25px; }
 
-/* Animaciones simples (Opcional) */
-@keyframes slideInFromLeft { 0% { transform: translateX(-50px); opacity: 0; } 100% { transform: translateX(0); opacity: 1; } }
-@keyframes slideInFromRight { 0% { transform: translateX(50px); opacity: 0; } 100% { transform: translateX(0); opacity: 1; } }
+/* Remove old keyframes if only using transitions and .animate-on-scroll */
+/* @keyframes slideInFromLeft { 0% { transform: translateX(-50px); opacity: 0; } 100% { transform: translateX(0); opacity: 1; } } */
+/* @keyframes slideInFromRight { 0% { transform: translateX(50px); opacity: 0; } 100% { transform: translateX(0); opacity: 1; } } */
 
 
 /* ============================================= */
 /* ==      SECCIÓN ACTIVIDADES (IMAGE GRID)   == */
 /* ============================================= */
 .image-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; }
-.image-box { display: flex; flex-direction: column; background-color: var(--white-color); border-radius: var(--border-radius); overflow: hidden; box-shadow: 0 5px 20px var(--shadow-color-light); transition: transform 0.3s ease, box-shadow 0.3s ease; color: var(--dark-text); height: 100%; position: relative; /* Para pseudo elemento */ }
+.image-box { display: flex; flex-direction: column; background-color: var(--white-color); border-radius: var(--border-radius); overflow: hidden; box-shadow: 0 5px 20px var(--shadow-color-light); transition: transform 0.3s ease, box-shadow 0.3s ease; /* Add opacity/transform transition via .animate-on-scroll */ color: var(--dark-text); height: 100%; position: relative; /* Para pseudo elemento */ }
 .image-box::after { /* Sutil línea de acento */ content: ''; position: absolute; bottom: 0; left: 0; width: 0; height: 4px; background-color: var(--accent-color); transition: width 0.4s ease; }
 .image-box:hover { transform: translateY(-8px); box-shadow: 0 12px 35px var(--shadow-color-medium); color: var(--dark-text); }
 .image-box:hover::after { width: 100%; }
@@ -207,7 +244,7 @@ p { margin-bottom: 1rem; color: var(--medium-text); }
 .clips-container::-webkit-scrollbar-track { background: var(--border-color); border-radius: 4px; }
 .clips-container::-webkit-scrollbar-thumb { background-color: var(--secondary-color); border-radius: 4px; border: 2px solid var(--light-bg); }
 .clips-container::-webkit-scrollbar-thumb:hover { background-color: var(--primary-color); }
-.clip-card { flex: 0 0 240px; /* Ancho fijo */ height: 420px; /* Altura fija */ border-radius: 16px; /* Bordes más redondeados */ overflow: hidden; position: relative; background-color: var(--medium-text); box-shadow: 0 6px 15px var(--shadow-color-medium); transition: transform 0.3s ease, box-shadow 0.3s ease; scroll-snap-align: start; /* Opcional: para snap */ }
+.clip-card { flex: 0 0 240px; /* Ancho fijo */ height: 420px; /* Altura fija */ border-radius: 16px; /* Bordes más redondeados */ overflow: hidden; position: relative; background-color: var(--medium-text); box-shadow: 0 6px 15px var(--shadow-color-medium); transition: transform 0.3s ease, box-shadow 0.3s ease; /* Add opacity transition via .animate-on-scroll */ scroll-snap-align: start; /* Opcional: para snap */ }
 .clip-card .tiktok-embed { width: 100%; height: 100%; display: block; /* Asegurar que ocupe todo */ }
 .clip-card:hover { transform: translateY(-6px) scale(1.03); box-shadow: 0 10px 25px var(--shadow-color-medium); z-index: 5; /* Para que se vea sobre otros al hacer hover */ }
 /* Estilo para el placeholder */
@@ -217,7 +254,7 @@ p { margin-bottom: 1rem; color: var(--medium-text); }
 /* ==   SECCIÓN DESTACADOS (FEATURES GRID)    == */
 /* ============================================= */
 .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 30px; }
-.feature-card { background-color: rgba(255, 255, 255, 0.1); padding: 35px 30px; border-radius: var(--border-radius); text-align: center; transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease; border: 1px solid rgba(255, 255, 255, 0.15); }
+.feature-card { background-color: rgba(255, 255, 255, 0.1); padding: 35px 30px; border-radius: var(--border-radius); text-align: center; transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease; /* Add opacity/transform transition via .animate-on-scroll */ border: 1px solid rgba(255, 255, 255, 0.15); }
 .feature-card:hover { background-color: rgba(255, 255, 255, 0.2); transform: translateY(-8px); box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1); }
 .feature-icon { color: var(--accent-color); margin-bottom: 20px; display: inline-block; /* Para centrar */ font-size: 2.5rem; /* Iconos más grandes */ }
 .feature-card h4 { margin-bottom: 12px; font-size: 1.25rem; color: var(--white-color); }
@@ -271,7 +308,10 @@ p { margin-bottom: 1rem; color: var(--medium-text); }
 /* ============================================= */
 /* ==        MEDIA QUERIES (RESPONSIVE)       == */
 /* ============================================= */
-@media (max-width: 1199px) { .timeline-nav { display: none; } } /* Ocultar timeline en pantallas medianas */
+@media (max-width: 1199px) {
+    /* Ocultar timeline en pantallas medianas y pequeñas */
+    .timeline-nav { display: none; }
+}
 
 @media (max-width: 991px) { /* Tablets */
     :root { --navbar-height: 65px; }
@@ -279,7 +319,9 @@ p { margin-bottom: 1rem; color: var(--medium-text); }
     .container { max-width: 90%; } /* Más ancho en tablet */
     .split-section { flex-direction: column; text-align: center; gap: 40px;}
     .split-image { max-width: 75%; margin-top: 30px; order: -1; /* Imagen arriba en tablet */ }
-    .split-content { order: 1; animation-name: slideInFromBottom; animation-delay: 0s; } /* Animación diferente */
+    .split-content { order: 1; }
+    /* Remove animation-name overrides, use .animate-on-scroll class logic */
+    /* .split-content { animation-name: slideInFromBottom; animation-delay: 0s; } */
     .split-content .section-title.text-left { text-align: center; }
     .split-content .section-title.text-left::after { left: 50%; transform: translateX(-50%); }
     .features-grid { grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; } /* Ajuste para 2 columnas */
@@ -298,7 +340,7 @@ p { margin-bottom: 1rem; color: var(--medium-text); }
     .logo img { height: 40px; } /* Logo más pequeño */
     .menu-toggle { display: block; }
     /* Menú Móvil */
-    .nav-links { position: fixed; top: var(--navbar-height); left: 0; width: 100%; height: calc(100vh - var(--navbar-height)); background-color: rgba(255, 255, 255, 0.98); backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px); flex-direction: column; align-items: stretch; justify-content: flex-start; /* Alinear al inicio */ transform: translateX(100%); transition: transform 0.4s cubic-bezier(0.23, 1, 0.32, 1); padding: 25px 0; z-index: 1050; overflow-y: auto; }
+    .nav-links { position: fixed; top: var(--navbar-height); left: 0; width: 100%; height: calc(100vh - var(--navbar-height)); background-color: rgba(255, 255, 255, 0.98); backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px); flex-direction: column; align-items: stretch; justify-content: flex-start; /* Alinear al inicio */ transform: translateX(100%); transition: transform 0.4s cubic-bezier(0.23, 1, 0.32, 1); padding: 25px 0; z-index: 1050; overflow-y: auto; /* Enable scrolling for long menus */ }
     .nav-links.active { transform: translateX(0); }
     .nav-links li { margin: 0; width: 100%; }
     .nav-links a { font-size: 1.1rem; padding: 14px 30px; color: var(--dark-text); display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); border-radius: 0; margin: 0; font-weight: 600; }
@@ -306,9 +348,10 @@ p { margin-bottom: 1rem; color: var(--medium-text); }
     .nav-links li:last-child a { border-bottom: none; }
     .nav-links a.nav-cta { background-color: var(--primary-color); color: var(--white-color); margin: 25px 30px; border-radius: 50px; text-align: center; justify-content: center; font-size: 1rem; padding: 14px 20px; border-bottom: none; }
     .nav-links a.nav-cta:hover, .nav-links a.nav-cta:focus { background-color: var(--secondary-color); color: var(--white-color); }
-    /* Dropdowns en móvil */
+    /* Dropdowns in mobile */
     .dropdown-menu { position: static; opacity: 1; visibility: visible; transform: none; box-shadow: none; border: none; border-top: 1px solid var(--border-color); padding: 0; background-color: var(--light-bg); display: none; /* Oculto por defecto */ width: 100%; border-radius: 0; }
-    .has-dropdown.open .dropdown-menu { display: block; /* Mostrar al abrir */ }
+    .has-dropdown.open .dropdown-menu { display: block; /* Mostrar al abrir con JS */ }
+    .dropdown-menu li { width: auto; } /* Reset width */
     .dropdown-menu a { padding: 12px 30px 12px 45px; /* Indentación */ font-size: 0.95rem; font-weight: 500; border-bottom: 1px solid rgba(0,0,0,0.05); }
     .dropdown-menu li:last-child a { border-bottom: none; }
     .dropdown-indicator { transition: transform 0.3s ease; }
@@ -343,5 +386,5 @@ p { margin-bottom: 1rem; color: var(--medium-text); }
     .whatsapp-button { width: 55px; height: 55px; font-size: 2rem; bottom: 20px; right: 20px; }
 }
 
-/* Animación Keyframes (reusada) */
-@keyframes slideInFromBottom { 0% { transform: translateY(50px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+/* Remove old keyframes if not used */
+/* @keyframes slideInFromBottom { 0% { transform: translateY(50px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } } */

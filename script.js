@@ -8,79 +8,101 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (menuToggle && navLinksContainer) {
         menuToggle.addEventListener('click', () => {
+            const isExpanded = navLinksContainer.classList.contains('active');
+            // Toggle active class on menu container and button
             navLinksContainer.classList.toggle('active');
             menuToggle.classList.toggle('active');
-            const isExpanded = navLinksContainer.classList.contains('active');
-            menuToggle.setAttribute('aria-expanded', isExpanded);
-            // Prevenir scroll del body cuando el menú está abierto
-            document.body.style.overflow = isExpanded ? 'hidden' : '';
-            // Si se cierra el menú, cerrar también los dropdowns abiertos
-            if (!isExpanded) {
+
+            // Update aria-expanded attribute for accessibility
+            menuToggle.setAttribute('aria-expanded', !isExpanded);
+
+            // Prevent scroll on body when menu is open
+            document.body.style.overflow = navLinksContainer.classList.contains('active') ? 'hidden' : '';
+
+            // If menu is closed, ensure all mobile dropdowns are also closed
+            if (!navLinksContainer.classList.contains('active')) {
                 closeAllMobileDropdowns();
             }
         });
 
-        // Cerrar menú si se hace click en un link (que no sea dropdown) o sublink
+        // Add click listener to the document to close the menu when clicking outside
+        document.addEventListener('click', (event) => {
+            const isClickInsideNavbar = navbar.contains(event.target);
+            const isMenuOpen = navLinksContainer.classList.contains('active');
+
+            // If menu is open and the click is outside the navbar/menu
+            if (isMenuOpen && !isClickInsideNavbar) {
+                 closeMobileNav();
+            }
+        });
+
+
+        // Close menu when clicking a link (unless it's a dropdown toggle)
         navLinksContainer.querySelectorAll('a').forEach(link => {
             link.addEventListener('click', (e) => {
                 const listItem = link.closest('li');
-                const isDropdownTrigger = listItem && listItem.classList.contains('has-dropdown') && link.parentElement === listItem; // Solo el trigger principal
+                // Check if it's a direct link within a top-level li AND that li is a dropdown parent
+                const isDropdownTrigger = listItem && listItem.classList.contains('has-dropdown') && link.parentElement === listItem;
                 const isInDropdownMenu = link.closest('.dropdown-menu');
 
-                 // Cerrar si es link normal (no trigger) y el menú está activo
-                if (!isDropdownTrigger && navLinksContainer.classList.contains('active')) {
-                     // Si es un link de submenú, cerrar siempre
-                     if (isInDropdownMenu) {
-                        closeMobileNav();
-                     } else {
-                         // Si es un link principal (ej: #inicio) cerrar solo si es ancla
-                        const href = link.getAttribute('href');
-                        if (href && href.startsWith('#')) {
-                            closeMobileNav();
-                        }
-                        // Si es un link a otra página (inscripciones.html), NO cerrar aquí, la página cambiará.
+                 // Close the mobile nav if:
+                 // 1. The menu is active (open)
+                 // 2. The clicked link is NOT a top-level dropdown trigger
+                 // 3. The link has an href starting with # (internal link on the same page) OR is inside a dropdown menu
+                 const href = link.getAttribute('href');
+                if (navLinksContainer.classList.contains('active') && !isDropdownTrigger) {
+                     if ((href && href.startsWith('#')) || isInDropdownMenu) {
+                         closeMobileNav();
                      }
+                    // If it's an external link or a link to another page (e.g., inscripciones.html),
+                    // browser navigation will happen, so no need to explicitly close the menu here.
                 }
             });
         });
 
-        // Manejar apertura/cierre de dropdowns en móvil
+        // Handle click on dropdown triggers in mobile view
         const dropdownTriggers = navLinksContainer.querySelectorAll('.has-dropdown > a');
         dropdownTriggers.forEach(trigger => {
             trigger.addEventListener('click', (e) => {
-                // Solo actuar si estamos en vista móvil (navLinksContainer tiene clase 'active')
+                // Only handle this with JS if the mobile menu is active
                 if (navLinksContainer.classList.contains('active')) {
-                    // Prevenir comportamiento de link si es solo para abrir/cerrar
+                    // Prevent default link behavior for dropdown triggers if they have an '#' href
+                    // If they have a real page link (e.g., about-us.html), let it navigate but still toggle dropdown state visually first
                      if (trigger.getAttribute('href') && trigger.getAttribute('href').startsWith('#')) {
                          e.preventDefault();
                      }
+
                     const parentLi = trigger.parentElement;
                     const isOpen = parentLi.classList.contains('open');
 
-                    // Opcional: cerrar otros dropdowns antes de abrir este
-                    // closeAllMobileDropdowns(parentLi);
+                    // Close other open dropdowns if desired (optional, but good UX)
+                    closeAllMobileDropdowns(parentLi);
 
+                    // Toggle the 'open' class on the parent li
                     parentLi.classList.toggle('open');
+                    // Update aria-expanded
                     trigger.setAttribute('aria-expanded', !isOpen);
                 }
-                 // En Desktop, el hover se encarga, no necesitamos JS para abrir/cerrar al click.
+                 // In Desktop, CSS :hover and :focus-within handle dropdowns, no JS needed for opening/closing.
             });
         });
 
+        // Helper function to close the mobile navigation
         function closeMobileNav() {
              navLinksContainer.classList.remove('active');
              menuToggle.classList.remove('active');
              menuToggle.setAttribute('aria-expanded', 'false');
-             document.body.style.overflow = ''; // Restaurar scroll
-             closeAllMobileDropdowns(); // Asegurarse que los dropdowns se cierren
+             document.body.style.overflow = ''; // Restore body scroll
+             closeAllMobileDropdowns(); // Ensure all dropdowns are closed when main menu closes
         }
 
+        // Helper function to close all mobile dropdowns
         function closeAllMobileDropdowns(keepOpenLi = null) {
             navLinksContainer.querySelectorAll('.has-dropdown').forEach(li => {
-                 // Cerrar solo si no es el que queremos mantener abierto (si aplica)
+                 // Close only if it's not the one we want to keep open (if specified)
                  if (li !== keepOpenLi) {
                     li.classList.remove('open');
-                    // Asegurarse que el <a> directo tenga el aria-expanded correcto
+                    // Ensure the direct <a> child has the correct aria-expanded state
                     const directLink = li.querySelector(':scope > a');
                     if (directLink) {
                        directLink.setAttribute('aria-expanded', 'false');
@@ -90,199 +112,246 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+
     // =============================================
     // ==     NAVBAR SUPERIOR (OCULTAR/MOSTRAR)   ==
     // =============================================
     const navbar = document.getElementById('main-navbar');
     if (navbar) {
         let lastScrollTop = 0;
-        const delta = 10; // Umbral de scroll más generoso
+        const delta = 15; // Umbral de scroll más generoso para evitar parpadeos
         const navbarHeight = navbar.offsetHeight;
         let didScroll; // Flag para optimizar
 
+        // Using passive listener for better performance
         window.addEventListener('scroll', () => {
             didScroll = true;
-        }, { passive: true }); // Listener pasivo para rendimiento
+        }, { passive: true });
 
+        // Check for scroll events periodically
         setInterval(() => {
             if (didScroll) {
                 hasScrolled();
                 didScroll = false;
             }
-        }, 150); // Chequear scroll más frecuentemente
+        }, 200); // Check less frequently
 
         function hasScrolled() {
             const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
 
-            // No hacer nada si el scroll es muy pequeño
+            // Make sure they scroll more than delta
             if (Math.abs(lastScrollTop - scrollTop) <= delta) return;
 
-            // Si scrollea hacia abajo Y está más allá de la altura de la navbar
+            // If they scrolled down and are past the navbar
             if (scrollTop > lastScrollTop && scrollTop > navbarHeight) {
-                // Ocultar navbar
+                // Hide navbar
                 navbar.classList.add('navbar--hidden');
             } else {
-                // Si scrollea hacia arriba O está cerca del top
+                // If they scrolled up or are at the top
                 if (scrollTop < lastScrollTop || scrollTop <= delta) {
                      navbar.classList.remove('navbar--hidden');
                 }
             }
-            lastScrollTop = scrollTop <= 0 ? 0 : scrollTop; // Manejo para scroll hacia arriba o negativo
+            lastScrollTop = scrollTop <= 0 ? 0 : scrollTop; // For Mobile or negative scrolling
         }
     }
 
     // =============================================
     // ==       TYPED.JS (EFECTO ESCRITURA)       ==
     // =============================================
-    // SE HA MOVIDO AL SCRIPT INLINE EN EL HTML
-    // para que use las frases específicas de la página de inicio.
-    // Dejamos esto comentado o eliminado para evitar conflictos.
-    /*
-    const typedTarget = document.getElementById('typed-output');
-    if (typedTarget && typeof Typed !== 'undefined') {
-        try {
-            const typed = new Typed('#typed-output', {
-                strings: [
-                    "Frase genérica 1.", // Estas no se usarían en el index
-                    "Frase genérica 2."
-                ],
-                typeSpeed: 50, backSpeed: 30, backDelay: 1500, startDelay: 500, loop: true, showCursor: true, cursorChar: '|',
-            });
-        } catch (error) {
-            console.error("Error al inicializar Typed.js (general):", error);
-            if (typedTarget) { typedTarget.textContent = "Texto fallback."; }
-        }
-    } else if (typedTarget) {
-        // console.warn("Typed.js no está definido o el elemento target no existe.");
-        // typedTarget.textContent = "Texto fallback.";
-    }
-    */
+    // REMOVED: Typed.js initialization is now handled inline in Index.html
+    // to provide page-specific strings more easily.
+
 
     // =============================================
     // ==    NAVEGACIÓN VERTICAL TIMELINE LOGIC   ==
     // =============================================
     const timelineNav = document.getElementById('timeline-nav');
-    const timelineNavLinks = timelineNav ? timelineNav.querySelectorAll('ul li a') : [];
-    // Asegurarse que 'sections' incluye header y footer para que 'Inicio' e 'Información' funcionen
-    const sections = document.querySelectorAll('section[id], header[id], footer[id]');
+    // Only proceed if timeline nav exists (it's hidden on smaller screens via CSS)
+    if (timelineNav) {
+        const timelineNavLinks = timelineNav.querySelectorAll('ul li a');
+        // Use header, section, and footer elements with IDs
+        const sections = document.querySelectorAll('header[id], section[id], footer[id]');
 
-    if (timelineNav && timelineNavLinks.length > 0 && sections.length > 0) {
-         // Ajustar rootMargin: más negativo significa que la sección debe estar más arriba para activarse.
-         // '-40% 0px -60% 0px' -> activa cuando el top de la sección está entre el 40% y 60% de la altura del viewport
-        const observerOptions = {
-            root: null,
-            rootMargin: '-40% 0px -60% 0px', // Activa en una franja central de la pantalla
-            threshold: 0 // Apenas entre en el margen
-        };
+        if (timelineNavLinks.length > 0 && sections.length > 0) {
 
-        let currentActiveSectionId = null; // Track sección activa actual
+            // Intersection Observer for section visibility
+            // rootMargin: defines the area within the viewport where intersection is checked.
+            // '-40% 0px -60% 0px' creates a horizontal band in the middle of the viewport.
+            // An element is considered 'intersecting' when its *border box* crosses this band.
+            // We set thresholds to 0, meaning any intersection with the band triggers the callback.
+            // This approach activates the link when the section is roughly centered vertically.
+            const observerOptions = {
+                root: null, // Use the viewport as the root
+                rootMargin: '-40% 0px -60% 0px',
+                threshold: 0
+            };
 
-        const sectionObserver = new IntersectionObserver((entries, observer) => {
-            let bestIntersectingEntry = null;
+            let currentActiveSectionId = null; // To track the currently active section ID
 
-             // Encontrar la entrada que esté más centrada o más visible dentro del rootMargin
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    // Dar prioridad si ya hay una activa o si es la primera
-                     if (!bestIntersectingEntry || entry.intersectionRatio > bestIntersectingEntry.intersectionRatio) {
-                        bestIntersectingEntry = entry;
-                    }
-                }
-            });
+            const sectionObserver = new IntersectionObserver((entries, observer) => {
+                 let activeEntry = null;
 
-             let activeSectionId;
-             if (bestIntersectingEntry) {
-                 activeSectionId = bestIntersectingEntry.target.id;
-             } else {
-                 // Si nada interseca claramente dentro del margen, buscar la más cercana arriba
-                 let closestSectionAbove = null;
-                 let minDistanceAbove = Infinity;
-
-                 sections.forEach(section => {
-                     const rect = section.getBoundingClientRect();
-                     if (rect.bottom < (window.innerHeight * 0.4)) { // Sección claramente arriba de la zona de activación
-                         const distance = Math.abs(rect.bottom - (window.innerHeight * 0.4)); // Distancia a la zona
-                         if (distance < minDistanceAbove) {
-                             minDistanceAbove = distance;
-                             closestSectionAbove = section;
+                 // Find the entry that is currently intersecting within the rootMargin
+                 // If multiple intersect, the order in entries isn't guaranteed to be scroll order,
+                 // but checking for intersection within the *specific* rootMargin band should
+                 // give us the primary section the user is looking at.
+                 entries.forEach(entry => {
+                     if (entry.isIntersecting) {
+                          // Prioritize if multiple sections overlap slightly in the viewport
+                          // (e.g., a short section between two longer ones)
+                         if (!activeEntry || entry.intersectionRatio > activeEntry.intersectionRatio) {
+                             activeEntry = entry;
                          }
                      }
                  });
-                 activeSectionId = closestSectionAbove ? closestSectionAbove.id : 'inicio'; // Default a inicio
-             }
+
+                 let nextActiveSectionId = null;
+                 if (activeEntry) {
+                     nextActiveSectionId = activeEntry.target.id;
+                 } else {
+                    // Fallback: If no section is strictly intersecting the rootMargin band,
+                    // find the closest section *above* the band. This handles cases where
+                    // the user scrolls to a point between sections.
+                    let closestSectionAbove = null;
+                    let minDistance = Infinity;
+                    const rootMarginTop = window.innerHeight * 0.4; // Top edge of the activation band
+
+                    sections.forEach(section => {
+                         const rect = section.getBoundingClientRect();
+                         if (rect.bottom < rootMarginTop) { // Section is above the top of the band
+                             const distance = Math.abs(rect.bottom - rootMarginTop);
+                             if (distance < minDistance) {
+                                 minDistance = distance;
+                                 closestSectionAbove = section;
+                             }
+                         }
+                    });
+                    // If a closest section above is found, make it active. Otherwise, default to 'inicio'.
+                    nextActiveSectionId = closestSectionAbove ? closestSectionAbove.id : 'inicio';
+                 }
+
+                // Special case: Ensure 'inicio' is active when at the very top of the page
+                if (window.pageYOffset < window.innerHeight * 0.5 && nextActiveSectionId !== 'inicio') {
+                    nextActiveSectionId = 'inicio';
+                }
 
 
-             // Forzar 'inicio' si estamos muy cerca de la parte superior
-            if (window.pageYOffset < window.innerHeight * 0.5) {
-                 activeSectionId = 'inicio';
-             }
+                // Update active class only if the active section has changed
+                if (nextActiveSectionId && nextActiveSectionId !== currentActiveSectionId) {
+                    currentActiveSectionId = nextActiveSectionId;
+                    timelineNavLinks.forEach(link => {
+                        // Use dataset.section attribute from the HTML
+                        if (link.dataset.section === currentActiveSectionId) {
+                            link.classList.add('active');
+                        } else {
+                            link.classList.remove('active');
+                        }
+                    });
+                }
+
+                // Logic to show/hide the timeline nav based on hero section visibility
+                const heroSection = document.getElementById('inicio');
+                const heroRect = heroSection ? heroSection.getBoundingClientRect() : null;
+                // Show the nav when the bottom of the hero is approximately 70% up from the viewport bottom
+                // (i.e., 30% down from the viewport top)
+                const showNavThreshold = window.innerHeight * 0.3; // Adjust threshold as needed
+                 if (heroRect && heroRect.bottom <= showNavThreshold) { // Use <= to show it as soon as hero bottom passes the threshold
+                     timelineNav.classList.add('visible');
+                 } else {
+                     timelineNav.classList.remove('visible');
+                      // Optional: Reset active state if the nav is hidden (could be jarring)
+                      // timelineNavLinks.forEach(link => link.classList.remove('active'));
+                      // currentActiveSectionId = null;
+                 }
 
 
-            // Solo actualizar si la sección activa ha cambiado
-            if (activeSectionId && activeSectionId !== currentActiveSectionId) {
-                currentActiveSectionId = activeSectionId;
-                timelineNavLinks.forEach(link => {
-                    // Usar dataset.section que pusimos en el HTML
-                    if (link.dataset.section === activeSectionId) {
-                        link.classList.add('active');
-                    } else {
-                        link.classList.remove('active');
+            }, observerOptions);
+
+            // Start observing each section
+            sections.forEach(section => {
+                sectionObserver.observe(section);
+            });
+
+            // Add smooth scroll behavior to timeline links
+            timelineNavLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const targetId = link.getAttribute('href'); // e.g., '#inicio'
+                    const targetElement = document.querySelector(targetId);
+
+                    if (targetElement) {
+                        let offset = 0;
+                        const topNavbar = document.getElementById('main-navbar');
+
+                        // Account for the sticky navbar height if it's visible
+                        // We check if the navbar is sticky AND not hidden
+                        const isNavbarStickyAndVisible = topNavbar &&
+                                                         getComputedStyle(topNavbar).position === 'sticky' &&
+                                                         !topNavbar.classList.contains('navbar--hidden');
+
+                         if (isNavbarStickyAndVisible) {
+                             offset = topNavbar.offsetHeight;
+                         }
+
+                        // Calculate the target scroll position minus the offset
+                        const elementPosition = targetElement.getBoundingClientRect().top + window.pageYOffset;
+                        const offsetPosition = elementPosition - offset;
+
+                        // Perform smooth scroll
+                        window.scrollTo({
+                            top: offsetPosition,
+                            behavior: 'smooth'
+                        });
+
+                        // Update the active class immediately on click for visual feedback
+                         timelineNavLinks.forEach(l => l.classList.remove('active'));
+                         link.classList.add('active');
+                         // Also update the tracking variable
+                         currentActiveSectionId = link.dataset.section;
                     }
                 });
-            }
-
-            // Lógica para mostrar/ocultar el timeline nav basado en scroll
-            const heroSection = document.getElementById('inicio');
-            const heroRect = heroSection ? heroSection.getBoundingClientRect() : null;
-            // Mostrar la nav cuando la parte inferior del hero esté aprox 70% arriba del viewport
-            const showNavThreshold = window.innerHeight * 0.7;
-            if (heroRect && heroRect.bottom < showNavThreshold) {
-                timelineNav.classList.add('visible');
-            } else {
-                timelineNav.classList.remove('visible');
-                 // Si se oculta, asegurarse que ningún link quede activo (opcional)
-                 // timelineNavLinks.forEach(link => link.classList.remove('active'));
-                 // currentActiveSectionId = null; // Resetear sección activa
-            }
-
-        }, observerOptions);
-
-        sections.forEach(section => {
-            sectionObserver.observe(section);
-        });
-
-        // Smooth scroll para los links del timeline
-        timelineNavLinks.forEach(link => {
-            link.addEventListener('click', (e) => {
-                e.preventDefault();
-                const targetId = link.getAttribute('href');
-                const targetElement = document.querySelector(targetId);
-                if (targetElement) {
-                    let offset = 0;
-                    const topNavbar = document.getElementById('main-navbar');
-                    // Considerar el offset solo si el navbar es sticky y está visible
-                    if (topNavbar && getComputedStyle(topNavbar).position === 'sticky' && !topNavbar.classList.contains('navbar--hidden')) {
-                         offset = topNavbar.offsetHeight;
-                    }
-
-                    const elementPosition = targetElement.getBoundingClientRect().top + window.pageYOffset;
-                    const offsetPosition = elementPosition - offset;
-
-                    window.scrollTo({
-                        top: offsetPosition,
-                        behavior: 'smooth'
-                    });
-
-                    // Actualizar visualmente el estado activo inmediatamente (opcional)
-                     timelineNavLinks.forEach(l => l.classList.remove('active'));
-                     link.classList.add('active');
-                     currentActiveSectionId = link.dataset.section;
-                }
             });
-        });
-    } else {
-        // Si no hay nav o links/secciones, ocultar la nav
-         if(timelineNav) timelineNav.style.display = 'none';
+        } else {
+             // If timeline nav exists but has no links or no sections found, hide it
+             if(timelineNav) timelineNav.style.display = 'none';
+             console.warn("Timeline navigation or sections not found. Timeline nav hidden.");
+        }
     }
 
-}); // Fin de DOMContentLoaded
+
+    // =============================================
+    // ==          REVEAL ON SCROLL LOGIC         ==
+    // =============================================
+    // Select elements that should animate into view
+    const elementsToReveal = document.querySelectorAll('.animate-on-scroll');
+
+    if (elementsToReveal.length > 0) {
+        // Options for the Intersection Observer
+        const revealObserverOptions = {
+            root: null, // Use the viewport
+            rootMargin: '0px', // Start observing as soon as element enters viewport
+            threshold: 0.1 // Trigger when 10% of the element is visible
+        };
+
+        // Create the observer
+        const revealObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                // If the element is intersecting (visible)
+                if (entry.isIntersecting) {
+                    // Add the class to trigger the transition/animation
+                    entry.target.classList.add('visible-element');
+                    // Stop observing the element after it's animated
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, revealObserverOptions);
+
+        // Observe each element selected
+        elementsToReveal.forEach(element => {
+            revealObserver.observe(element);
+        });
+    }
+
+
+}); // End of DOMContentLoaded
