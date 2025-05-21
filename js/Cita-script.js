@@ -37,7 +37,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- FUNCIONES ---
     function renderCalendar(year, month) {
-        // ... (código de renderCalendar sin cambios, ya está bien) ...
         const firstDayOfMonth = new Date(year, month, 1);
         const firstDayOfWeek = firstDayOfMonth.getDay();
         const lastDayOfMonth = new Date(year, month + 1, 0).getDate();
@@ -100,7 +99,7 @@ document.addEventListener('DOMContentLoaded', () => {
         selectedTime = null;
 
         // Verifica PROXY_WORKER_URL
-        if (!PROXY_WORKER_URL || PROXY_WORKER_URL.includes('URL_DE_TU_WORKER_AQUI') || PROXY_WORKER_URL.length < 30) { // Chequeo simple
+        if (!PROXY_WORKER_URL || PROXY_WORKER_URL.length < 30 || PROXY_WORKER_URL.includes("URL_DE_TU_WORKER_AQUI")) { 
             const errorMsg = 'Error de configuración: URL del proxy no especificada correctamente.';
             console.error(errorMsg, "URL actual:", PROXY_WORKER_URL);
             selectedDateDisplay.textContent = 'Error de Configuración';
@@ -124,11 +123,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 throw new Error(errorMsg);
             }
             const slotsDataFromGAS = await response.json();
-            if (slotsDataFromGAS.error) { // Manejar errores que GAS podría devolver como JSON
+            if (slotsDataFromGAS.error) { 
                 throw new Error(slotsDataFromGAS.error);
             }
 
-            const dateObj = new Date(dateString + 'T00:00:00Z'); // Interpretar como UTC para consistencia con getUTCDay etc.
+            const dateObj = new Date(dateString + 'T00:00:00Z'); 
             const dayOfWeek = DAY_NAMES_LONG[dateObj.getUTCDay()];
             const dayOfMonth = dateObj.getUTCDate();
             const monthName = MONTH_NAMES[dateObj.getUTCMonth()];
@@ -136,7 +135,6 @@ document.addEventListener('DOMContentLoaded', () => {
             
             renderSlotsBasedOnData(slotsDataFromGAS, dateString);
 
-            // GA Event: view_time_slots
             if (typeof gtag === 'function' && slotsDataFromGAS && slotsDataFromGAS.length > 0) {
                 const nowForGA = new Date();
                 const isTodayForGA = (dateString === `${nowForGA.getFullYear()}-${(nowForGA.getMonth() + 1).toString().padStart(2, '0')}-${nowForGA.getDate().toString().padStart(2, '0')}`);
@@ -144,7 +142,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (!s.isAvailable) return false;
                     if (isTodayForGA) {
                         const [h, m] = s.time.split(':').map(Number);
-                        // Crear la fecha del slot en la zona horaria local del navegador para comparar con 'nowForGA'
                         const slotDt = new Date(nowForGA.getFullYear(), nowForGA.getMonth(), nowForGA.getDate(), h, m);
                         return slotDt >= nowForGA;
                     }
@@ -169,7 +166,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function renderSlotsBasedOnData(slotsData, dateString) {
-        // ... (código de renderSlotsBasedOnData sin cambios, ya está bien) ...
         timeSlotsContainer.innerHTML = ''; 
         selectedTime = null;
 
@@ -188,7 +184,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 timeSlotElement.textContent = slotInfo.time;
                 timeSlotElement.classList.add('time-slot');
                 timeSlotElement.dataset.time = slotInfo.time;
-
                 let slotIsActuallyRenderedAsAvailable = slotInfo.isAvailable;
 
                 if (isToday && slotIsActuallyRenderedAsAvailable) {
@@ -230,7 +225,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function handleDayClick(event) {
-        // ... (código de handleDayClick sin cambios, ya llama a fetchAndRenderTimeSlots) ...
         const clickedDay = event.target.closest('.day');
         if (!clickedDay || clickedDay.classList.contains('outside-month') || clickedDay.classList.contains('past-day')) {
             return;
@@ -238,10 +232,8 @@ document.addEventListener('DOMContentLoaded', () => {
         if (clickedDay.classList.contains('selected') && selectedDate === clickedDay.dataset.date) {
              return;
         }
-
         const previouslySelectedDay = calendarGrid.querySelector('.day.selected');
         if (previouslySelectedDay) previouslySelectedDay.classList.remove('selected');
-        
         clickedDay.classList.add('selected');
         selectedDate = clickedDay.dataset.date;
 
@@ -256,14 +248,11 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function handleTimeSlotClick(event) {
-        // ... (código de handleTimeSlotClick sin cambios) ...
         const clickedTimeSlot = event.target.closest('.time-slot:not(.disabled)');
         if (!clickedTimeSlot) return;
         if (clickedTimeSlot.classList.contains('selected')) return;
-
         const previouslySelectedTime = timeSlotsContainer.querySelector('.time-slot.selected');
         if (previouslySelectedTime) previouslySelectedTime.classList.remove('selected');
-        
         clickedTimeSlot.classList.add('selected');
         selectedTime = clickedTimeSlot.dataset.time;
 
@@ -278,7 +267,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function checkFormAndSelection() {
-        // ... (código de checkFormAndSelection sin cambios) ...
         const nameFilled = inputNombre && inputNombre.value.trim() !== '';
         const emailFilled = inputEmail && inputEmail.value.trim() !== '';
         const phoneFilled = inputPhone && inputPhone.value.trim() !== '';
@@ -308,7 +296,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function displayFormStatus(message, isSuccess = false) {
-        // ... (código de displayFormStatus sin cambios) ...
         if (!bookingFormStatus) return;
         bookingFormStatus.textContent = message;
         bookingFormStatus.classList.remove('success', 'error', 'visible');
@@ -326,14 +313,14 @@ document.addEventListener('DOMContentLoaded', () => {
         displayFormStatus('');
 
         // Verifica PROXY_WORKER_URL
-        if (!PROXY_WORKER_URL || PROXY_WORKER_URL.includes('URL_DE_TU_WORKER_AQUI') || PROXY_WORKER_URL.length < 30) {
+        if (!PROXY_WORKER_URL || PROXY_WORKER_URL.length < 30 || PROXY_WORKER_URL.includes("URL_DE_TU_WORKER_AQUI")) { // Ajusta la condición
             displayFormStatus('Error de configuración: URL del proxy no especificada correctamente.', false);
             if(confirmBtn){ confirmBtn.disabled = false; checkFormAndSelection(); }
             return;
         }
 
         try {
-            // Usa PROXY_WORKER_URL y quita mode: 'no-cors', añade Content-Type
+            // Usa PROXY_WORKER_URL
             const response = await fetch(PROXY_WORKER_URL, {
                 method: 'POST',
                 cache: 'no-cache',
@@ -358,7 +345,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
                 setTimeout(resetFormAndCalendar, 4000);
             } else {
-                // Manejo de error de GA si la reserva falla
                 if (typeof gtag === 'function') {
                     gtag('event', 'form_submission_error', {
                         'event_category': 'Form Interaction',
@@ -377,7 +363,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function resetFormAndCalendar() {
-        // ... (código de resetFormAndCalendar sin cambios) ...
         selectedDate = null;
         selectedTime = null;
         if(inputNombre) inputNombre.value = '';
@@ -399,7 +384,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     function handleFormInteraction() {
-        // ... (código de handleFormInteraction sin cambios) ...
         if (!formInteractionStarted && typeof gtag === 'function') {
             gtag('event', 'form_start', {
                 'event_category': 'Form Interaction',
@@ -409,18 +393,105 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // --- EVENT LISTENERS --- (sin cambios en la lógica de cómo se añaden)
-    if (prevMonthBtn) { /* ... código existente ... */ }
-    if (nextMonthBtn) { /* ... código existente ... */ }
+    // --- EVENT LISTENERS ---
+    if (prevMonthBtn) {
+        prevMonthBtn.addEventListener('click', () => {
+            const direction = 'previous_month';
+            if (typeof gtag === 'function' && monthYearDisplay) { // Verificar que monthYearDisplay exista
+                gtag('event', 'navigate_calendar', {
+                    'event_category': 'Calendar Interaction',
+                    'navigation_direction': direction,
+                    'displayed_month_before_nav': monthYearDisplay.textContent
+                });
+            }
+            const today = new Date(); today.setDate(1); today.setHours(0,0,0,0);
+            const prevMonthFirstDay = new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1);
+            if (prevMonthFirstDay < today && 
+                !(prevMonthFirstDay.getFullYear() === today.getFullYear() && prevMonthFirstDay.getMonth() === today.getMonth())
+            ) {
+                 prevMonthBtn.disabled = true; return;
+            }
+            currentDate.setMonth(currentDate.getMonth() - 1);
+            renderCalendar(currentDate.getFullYear(), currentDate.getMonth());
+            selectedDateDisplay.textContent = '';
+            timeSlotsContainer.innerHTML = '<div class="no-date-selected">Selecciona una fecha...</div>';
+            timeSlotsContainer.classList.add('has-message');
+            userInfoFormDiv.style.display = 'none';
+            selectedDate = null; selectedTime = null;
+            checkFormAndSelection(); displayFormStatus('');
+            if (typeof gtag === 'function' && monthYearDisplay) {
+                 gtag('event', 'navigate_calendar_month_updated', {
+                    'displayed_month_after_nav': monthYearDisplay.textContent
+                });
+            }
+        });
+    }
+    if (nextMonthBtn) {
+        nextMonthBtn.addEventListener('click', () => {
+            const direction = 'next_month';
+             if (typeof gtag === 'function' && monthYearDisplay) {
+                gtag('event', 'navigate_calendar', {
+                    'event_category': 'Calendar Interaction',
+                    'navigation_direction': direction,
+                    'displayed_month_before_nav': monthYearDisplay.textContent
+                });
+            }
+            currentDate.setMonth(currentDate.getMonth() + 1);
+            renderCalendar(currentDate.getFullYear(), currentDate.getMonth());
+            selectedDateDisplay.textContent = '';
+            timeSlotsContainer.innerHTML = '<div class="no-date-selected">Selecciona una fecha...</div>';
+            timeSlotsContainer.classList.add('has-message');
+            userInfoFormDiv.style.display = 'none';
+            selectedDate = null; selectedTime = null;
+            checkFormAndSelection(); displayFormStatus('');
+            if(prevMonthBtn) prevMonthBtn.disabled = false;
+             if (typeof gtag === 'function' && monthYearDisplay) {
+                 gtag('event', 'navigate_calendar_month_updated', {
+                    'displayed_month_after_nav': monthYearDisplay.textContent
+                });
+            }
+        });
+    }
+
     if (calendarGrid) calendarGrid.addEventListener('click', handleDayClick);
     if (timeSlotsContainer) timeSlotsContainer.addEventListener('click', handleTimeSlotClick);
     if (inputNombre) inputNombre.addEventListener('input', () => { handleFormInteraction(); checkFormAndSelection(); });
     if (inputEmail) inputEmail.addEventListener('input', () => { handleFormInteraction(); checkFormAndSelection(); });
     if (inputPhone) inputPhone.addEventListener('input', () => { handleFormInteraction(); checkFormAndSelection(); });
-    if (confirmBtn) { /* ... código existente ... */ }
 
+    if (confirmBtn) {
+        confirmBtn.addEventListener('click', (event) => {
+            console.log("Botón 'Confirmar Cita' CLICADO"); // Log para verificar clic
+            event.preventDefault();
+            if(confirmBtn.disabled) {
+                console.log("Botón está deshabilitado, no se hace nada.");
+                return;
+            }
+            console.log("Preparando bookingData...");
+            const bookingData = {
+                form_source: inputFormSource ? inputFormSource.value : 'cita_calendario_default',
+                fecha_reserva: selectedDate,
+                hora_reserva: selectedTime,
+                nombre: inputNombre ? inputNombre.value.trim() : '',
+                email: inputEmail ? inputEmail.value.trim() : '',
+                telefono: inputPhone ? inputPhone.value.trim() : '',
+            };
+            console.log("bookingData:", bookingData);
+            if (!selectedDate || !selectedTime || !bookingData.nombre || !bookingData.email || !bookingData.telefono || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(bookingData.email)) {
+                 console.error("VALIDACIÓN FALLÓ: Faltan datos o email inválido.");
+                 displayFormStatus('Completa todos los campos requeridos correctamente.', false);
+                 checkFormAndSelection();
+                 return;
+            }
+            console.log("Validación pasada, llamando a sendBookingData...");
+            sendBookingData(bookingData);
+        });
+    } else {
+        console.error("Elemento del botón #btn-confirmar NO encontrado.");
+    }
 
     // --- INICIALIZACIÓN ---
+    console.log("Elemento confirmBtn al final de DOMContentLoaded:", document.getElementById('btn-confirmar')); // Verificar si el botón existe al final
     renderCalendar(currentDate.getFullYear(), currentDate.getMonth());
     timeSlotsContainer.innerHTML = '<div class="no-date-selected">Selecciona una fecha a la izquierda para ver los horarios disponibles.</div>';
     timeSlotsContainer.classList.add('has-message');
