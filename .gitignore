@@ -1,0 +1,94 @@
+# Archivos de Sistema Operativo
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Archivos de Configuración de IDEs y Editores
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sublime-workspace
+*.sublime-project
+
+# Archivos de Log
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Archivos de Variables de Entorno Locales
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+# Si usas algún archivo para guardar la URL de GAS o del Worker localmente y no quieres que se suba
+# local_config.js 
+# secrets.json
+
+# Dependencias de Node (si usaras Node.js para alguna herramienta de desarrollo)
+node_modules/
+dist/
+build/
+coverage/
+.npm
+.pnp.*
+
+# Archivos de Paquetes (si usaras gestores de paquetes)
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Archivos de configuración de herramientas de compilación/transpilación
+.parcel-cache/
+.cache/
+.next/
+.nuxt/
+.svelte-kit/
+.DS_Store # Duplicado, pero común
+public/build/ # Ejemplo para algunos frameworks
+
+# Archivos temporales y de backup de editores
+*~
+*.swp
+*.swo
+*.bak
+*.tmp
+
+# Archivos de configuración específicos de algunas herramientas (ajusta si usas alguna)
+# .firebaserc
+# firebase.json # A menos que quieras versionar la configuración de hosting de Firebase
+# .vercel/
+
+# Archivos de testing (reportes, etc.)
+# coverage/
+# .nyc_output/
+
+# Comentarios específicos para tu proyecto:
+# -----------------------------------------
+# No subir directamente el código de Google Apps Script si se maneja por separado
+# o si contiene claves/IDs sensibles que no deberían estar en el repo público del frontend.
+# Sin embargo, si este repo ES para versionar el código de Apps Script, entonces NO ignores .gs y .html de la carpeta apps-script.
+# apps-script/ # Descomenta esta línea si la carpeta apps-script NO debe ser parte de este repositorio en particular.
+
+# Si usas Wrangler para Cloudflare Workers y tienes un archivo wrangler.toml con secretos,
+# considera si quieres versionar el wrangler.toml base pero ignorar uno con secretos:
+# wrangler.toml.secret # Ejemplo
+# .wrangler/ # Carpeta de caché de Wrangler
+
+# Archivos de despliegue o compilación si tu frontend tiene un paso de build
+# build/
+# dist/
+# .output/
+
+# Cualquier otro archivo o carpeta que sea específico de tu entorno local
+# y no deba ser compartido.
+# mi_clave_privada.pem
+# notas_personales.txt
