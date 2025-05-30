@@ -4,7 +4,7 @@
 // Usando Cloudflare Worker como Proxy
 // ==========================================================================
 
-const PROXY_WORKER_URL = 'https://unirem-citas-proxy.oswaldomartinezalvarez.workers.dev/'; // URL de tu Cloudflare Worker
+const PROXY_WORKER_URL = 'https://unirem-proxy-mk2.oswaldomartinezalvarez.workers.dev/'; // URL de tu Cloudflare Worker
 
 document.addEventListener('DOMContentLoaded', () => {
     // --- ELEMENTOS DEL DOM ---
