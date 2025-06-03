@@ -11,10 +11,14 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-    <link rel="icon" href="./src/cropped-f1.webp" type="image/png"> <!-- Verifica esta ruta -->
+    <!-- Favicon - Verifica esta ruta -->
+    <link rel="icon" href="../src/cropped-f1.webp" type="image/png"> 
+    <!-- Si cropped-f1.webp está en la misma carpeta que Cita.html, usa: href="./cropped-f1.webp" -->
+    <!-- Si está en una carpeta 'images' al mismo nivel que 'pages': href="../images/cropped-f1.webp" -->
 
-    <!-- CSS Específico para la página de Cita -->
-    <link rel="stylesheet" href="../src/Cita.css"> <!-- Verifica esta ruta -->
+
+    <!-- CSS Específico para la página de Cita - Verifica esta ruta -->
+    <link rel="stylesheet" href="../src/Cita.css"> 
 
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
@@ -34,7 +38,8 @@
         <div class="container booking-page-container">
 
             <div class="booking-header">
-                 <img src="../images/src/logo.png" alt="Logo UNIREM" class="unirem-logo-large"> <!-- Verifica esta ruta -->
+                 <!-- Logo - Verifica esta ruta -->
+                 <img src="../images/src/logo.png" alt="Logo UNIREM" class="unirem-logo-large"> 
                  <h1 class="form-title">¡Agenda tu Asesoría Educativa!</h1>
                  <p class="header-description">Selecciona la fecha y hora que mejor se adapte a tu disponibilidad y completa tus datos para confirmar.</p>
             </div>
@@ -62,44 +67,93 @@
                          <p><i class="fas fa-clock"></i> Duración: 30 min</p>
                          <p><i class="fas fa-video"></i> Modalidad: Videollamada o Teléfono</p>
                      </div>
+                     <div class="timezone-selector">
+                        
+                     </div>
                 </div>
 
                 <div class="booking-slots-form-pane">
-                    <div class="selected-date-display" aria-live="polite"></div>
+                    <div class="selected-date-display" aria-live="polite">
+                        <!-- La fecha seleccionada se mostrará aquí por JS -->
+                    </div>
                     <div class="time-slots">
-                        <div class="no-date-selected">Selecciona una fecha a la izquierda para ver los horarios disponibles.</div>
+                        <!-- Mensaje inicial o slots de tiempo -->
+                        <div class="no-date-selected">Selecciona una fecha en el calendario para ver los horarios disponibles.</div>
                     </div>
 
                     <div class="user-info-form" style="display: none;">
                         <h4 class="form-section-title">Completa tus Datos</h4>
                         <div class="form-group">
-                            <label for="input-nombre" class="form-label">Nombre Completo <span class="required-star">*</span>:</label>
+                            <label for="input-nombre" class="form-label">Nombre Completo<span class="required-star">*</span>:</label>
                             <input type="text" id="input-nombre" name="nombre" class="form-input" required placeholder="Tu nombre completo">
                         </div>
                         <div class="form-group">
-                            <label for="input-email" class="form-label">Correo Electrónico <span class="required-star">*</span>:</label>
+                            <label for="input-email" class="form-label">Correo Electrónico<span class="required-star">*</span>:</label>
                             <input type="email" id="input-email" name="email" class="form-input" required placeholder="tu.correo@ejemplo.com">
                         </div>
                          <div class="form-group">
-                            <label for="input-phone" class="form-label">Teléfono / WhatsApp <span class="required-star">*</span>:</label>
+                            <label for="input-phone" class="form-label">Teléfono / WhatsApp<span class="required-star">*</span>:</label>
                             <input type="tel" id="input-phone" name="telefono" class="form-input" required placeholder="Ej: 55 1234 5678">
                         </div>
-                        <input type="hidden" name="form_source" value="cita_calendario">
-                        <!-- Campos opcionales (si los necesitas) -->
-                        <!-- 
+
+                                                <!-- ****** NUEVOS CAMPOS (CON VALUES CORREGIDOS) ****** -->
                         <div class="form-group">
-                            <label for="input-carrera" class="form-label">Carrera de Interés (Opcional):</label>
-                            <input type="text" id="input-carrera" name="carrera_interes" class="form-input" placeholder="Ej: Ingeniería Industrial">
+                            <label for="select-oferta" class="form-label">Oferta Educativa de Interés <span class="required-star">*</span>:</label>
+                            <select id="select-oferta" name="oferta_educativa" class="form-input" required>
+                                <option value="" disabled selected>-- Selecciona una opción --</option>
+                                <option value="bachillerato_general">Bachillerato General</option>
+                                <option value="prepa_unam">Prepa UNAM</option>
+                                <option value="licenciatura_fisioterapia">Licenciatura en Fisioterapia</option>
+                                <option value="licenciatura_gastronomia">Licenciatura en Gastronomía</option>
+                                <option value="licenciatura_derecho">Licenciatura en Derecho</option>
+                                <option value="licenciatura_diseno_grafico">Licenciatura en Diseño Gráfico</option>
+                                <option value="licenciatura_ingenieria_sistemas">Licenciatura en Ingeniería en Sistemas</option>
+                                <option value="licenciatura_arquitectura">Licenciatura en Arquitectura</option>
+                                <option value="licenciatura_psicologia">Licenciatura en Psicología</option>
+                                <option value="licenciatura_administracion_empresas">Licenciatura en Administración de empresas</option>
+                                <option value="licenciatura_administracion_empresas_turisticas">Licenciatura en Administración de Empresas Turísticas</option>
+                                <option value="licenciatura_ciencias_comunicacion">Licenciatura en Ciencias de la Comunicación</option>
+                                <option value="licenciatura_mercadotecnia">Licenciatura en Mercadotecnia</option>
+                                <option value="licenciatura_contaduria">Licenciatura en Contaduría</option>
+                                <option value="licenciatura_comercio_internacional">Licenciatura en Comercio Internacional</option>
+                                <option value="licenciatura_nutricion">Licenciatura en Nutrición</option>
+                                <option value="licenciatura_pedagogia">Licenciatura en Pedagogía</option>
+                                <option value="licenciatura_empresarias_derecho">Licenciatura Empresarial en Derecho</option>
+                                <option value="licenciatura_empresarial_administracion_empresas">Licenciatura Empresarial en Administración de Empresas</option>
+                                <option value="licenciatura_linea_derecho">Licenciatura en línea en Derecho</option>
+                                <option value="licenciatura_linea_pedagogia">Licenciatura en línea en Pedagogía</option>
+                                <option value="maestria_administracion_gestion_talento_humano">Maestría en Administración Gestión del Talento Humano</option>
+                                <option value="maestria_derecho_fiscal_administrativo">Maestría en Derecho Fiscal y Administrativo</option>
+                                <option value="maestria_derecho_corporativo_proteccion_empresarial">Maestría en Derecho Corporativo y Protección Empresarial</option>
+                                <option value="maestria_derecho_procesal_penal_acusatorio_adversarial">Maestría en Derecho Procesal Penal Acusatorio y Adversarial</option>
+                                <option value="maestria_educacion">Maestría en Educación</option>
+                                <option value="maestria_seguridad_tecnologias_informacion">Maestría en Seguridad y Tecnologías de la información</option>
+                                <option value="diplomado_neuromarketing">Diplomado en Neuromarketing</option>
+                                <option value="diplomado_sabor_salud">Diplomado en Sabor y Salud</option>
+                                <option value="diplomado_habilidades_directivas">Diplomado en Habilidades Directivas</option>
+                                <option value="otro_programa">Otro Programa/Consulta General</option>
+                            </select>
                         </div>
+                        <!-- ... resto del formulario ... -->
+
                         <div class="form-group">
-                            <label for="input-mensaje" class="form-label">Mensaje Adicional (Opcional):</label>
-                            <textarea id="input-mensaje" name="mensaje" class="form-textarea" placeholder="Escribe aquí tus dudas específicas..."></textarea>
+                            <label for="select-modalidad" class="form-label">Modalidad de Contacto Preferida <span class="required-star">*</span>:</label>
+                            <select id="select-modalidad" name="modalidad_contacto" class="form-input" required>
+                                <option value="" disabled selected>-- Selecciona una opción --</option>
+                                <option value="llamada">Llamada Telefónica</option>
+                                <option value="whatsapp">Mensaje de WhatsApp</option>
+                                <option value="videollamada">Videollamada (Google Meet/Zoom)</option>
+                                <option value="correo">Correo Electrónico</option> 
+                            </select>
                         </div>
-                        -->
+                        <!-- ****** FIN NUEVOS CAMPOS ****** -->
+                        
+                        <input type="hidden" name="form_source" value="cita_calendario_web">
+                        
                         <div id="booking-form-status" class="form-status" aria-live="polite"></div>
                     </div>
 
-                    <button id="btn-confirmar" class="button button-primary" disabled> <!-- Removí button-pill por si acaso, ya que el CSS lo maneja -->
+                    <button id="btn-confirmar" class="button" disabled> 
                          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-calendar" viewBox="0 0 16 16" style="vertical-align: middle; margin-right: 8px;"> <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5zM1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4H1z"/></svg>
                          Selecciona Fecha y Hora
                     </button>
@@ -110,6 +164,7 @@
         </div> <!-- Fin .container.booking-page-container -->
     </section> <!-- Fin .content-area -->
 
-    <script src="../js/Cita-script.js"></script> <!-- Verifica esta ruta -->
+    <!-- JavaScript de la página de Cita - Verifica esta ruta -->
+    <script src="../js/Cita-script.js"></script> 
 </body>
 </html>
